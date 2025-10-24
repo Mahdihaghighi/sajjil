@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FinancialController;
+use App\Http\Controllers\Api\TextController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\SuggestionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +19,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Authentication routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
+    
+    // Financial routes
+    Route::apiResource('finance', FinancialController::class);
+    
+    // Text routes
+    Route::apiResource('texts', TextController::class);
+    
+    // Reports routes
+    Route::get('/reports/financial', [ReportController::class, 'financial']);
+    
+    // Suggestion routes
+    Route::get('/suggest/titles', [SuggestionController::class, 'titles']);
 });
