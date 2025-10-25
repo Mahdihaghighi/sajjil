@@ -1,0 +1,74 @@
+{
+  "name": "سجیل - مدیریت مالی و متنی",
+  "short_name": "سجیل",
+  "description": "نرم‌افزار مدیریت مالی و یادداشت‌های متنی",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#16213e",
+  "color_scheme": "light dark",
+  "theme_color_media": "(prefers-color-scheme: light)",
+  "theme_color_dark": "#1a1a2e",
+  "background_color_dark": "#0f0f23",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile-screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "افزودن هزینه",
+      "short_name": "هزینه جدید",
+      "description": "افزودن هزینه جدید",
+      "url": "/?action=add-financial"
+    },
+    {
+      "name": "افزودن یادداشت",
+      "short_name": "یادداشت جدید",
+      "description": "افزودن یادداشت جدید",
+      "url": "/?action=add-text"
+    },
+    {
+      "name": "گزارشات",
+      "short_name": "گزارشات",
+      "description": "مشاهده گزارشات مالی",
+      "url": "/?tab=reports"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

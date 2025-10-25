@@ -709,6 +709,43 @@ function setTheme(theme) {
     
     // Update theme options
     updateThemeOptions(theme);
+    
+    // Update PWA manifest theme dynamically
+    updatePWATheme(theme);
+}
+
+function updatePWATheme(theme) {
+    // Determine actual theme based on user preference and system setting
+    let actualTheme = theme;
+    
+    if (theme === 'system') {
+        // Check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            actualTheme = 'dark';
+        } else {
+            actualTheme = 'light';
+        }
+    }
+    
+    // Update theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+        themeColorMeta.content = actualTheme === 'dark' ? '#1a1a2e' : '#16213e';
+    }
+    
+    // Update background-color meta tag
+    let backgroundColorMeta = document.querySelector('meta[name="background-color"]');
+    if (!backgroundColorMeta) {
+        backgroundColorMeta = document.createElement('meta');
+        backgroundColorMeta.name = 'background-color';
+        document.head.appendChild(backgroundColorMeta);
+    }
+    backgroundColorMeta.content = actualTheme === 'dark' ? '#0f0f23' : '#1a1a2e';
+    
+    // Dispatch custom event for PWA theme update
+    window.dispatchEvent(new CustomEvent('themeChanged', {
+        detail: { theme: actualTheme }
+    }));
 }
 
 function updateThemeIcon(theme) {
@@ -958,6 +995,14 @@ function clearFilters() {
     
     loadFinancialRecords();
 }
+
+// Add clear filters event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', clearFilters);
+    }
+});
 
 // Edit and Delete Functions
 window.editFinancialRecord = async function(id) {

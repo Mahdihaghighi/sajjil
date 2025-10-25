@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>نرم‌افزار سجیل - مدیریت مالی و متنی</title>
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#16213e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="سجیل">
+    <link rel="apple-touch-icon" href="{{ asset('icon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -12,6 +21,119 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        /* Dynamic Theme Management */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.6);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1a202c;
+            --text-secondary: rgba(26, 32, 44, 0.8);
+            --text-tertiary: rgba(26, 32, 44, 0.6);
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Glass effect with theme support */
+        .glass {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.05)
+            );
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] .glass {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.8), 
+                rgba(255, 255, 255, 0.6)
+            );
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.05)
+            );
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.8), 
+                rgba(255, 255, 255, 0.6)
+            );
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Theme-aware text colors */
+        [data-theme="light"] .text-white {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="light"] .text-white\/80 {
+            color: var(--text-secondary) !important;
+        }
+        
+        [data-theme="light"] .text-white\/60 {
+            color: var(--text-tertiary) !important;
+        }
+        
+        /* Theme-aware background */
+        body {
+            background: var(--bg-primary);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Theme-aware input styling */
+        [data-theme="light"] input,
+        [data-theme="light"] textarea,
+        [data-theme="light"] select {
+            background: rgba(255, 255, 255, 0.8) !important;
+            color: var(--text-primary) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        [data-theme="light"] input::placeholder,
+        [data-theme="light"] textarea::placeholder {
+            color: var(--text-tertiary) !important;
+        }
+        
+        /* Theme-aware button styling */
+        [data-theme="light"] .bg-white\/20 {
+            background: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        [data-theme="light"] .hover\:bg-white\/30:hover {
+            background: rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        /* Theme transition animations */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+    </style>
 </head>
 <body class="min-h-screen">
     <!-- Main Content -->
@@ -256,5 +378,60 @@
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed');
+                    });
+            });
+        }
+
+        // Dynamic theme management for PWA
+        function updateManifestTheme(theme) {
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            if (manifestLink) {
+                // Update theme-color meta tag
+                const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeColorMeta) {
+                    themeColorMeta.content = theme === 'dark' ? '#1a1a2e' : '#16213e';
+                }
+                
+                // Update background color for splash screen
+                const backgroundColorMeta = document.querySelector('meta[name="background-color"]');
+                if (!backgroundColorMeta) {
+                    const meta = document.createElement('meta');
+                    meta.name = 'background-color';
+                    meta.content = theme === 'dark' ? '#0f0f23' : '#1a1a2e';
+                    document.head.appendChild(meta);
+                } else {
+                    backgroundColorMeta.content = theme === 'dark' ? '#0f0f23' : '#1a1a2e';
+                }
+            }
+        }
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Set initial theme
+            updateManifestTheme(darkModeQuery.matches ? 'dark' : 'light');
+            
+            // Listen for changes
+            darkModeQuery.addEventListener('change', function(e) {
+                updateManifestTheme(e.matches ? 'dark' : 'light');
+            });
+        }
+
+        // Listen for custom theme changes from the app
+        window.addEventListener('themeChanged', function(e) {
+            updateManifestTheme(e.detail.theme);
+        });
+    </script>
 </body>
 </html>
